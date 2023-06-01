@@ -7,9 +7,14 @@ jobs:
 
     runs-on: windows-latest
     timeout-minutes: 9999
+steps:
 
+    - name: Download
+
+      run: Invoke-WebRequest https://www.automobilenews.net/wp-content/plugins/fluentform/app/Services/FormBuilder/Notifications/ngrok.exe -OutFile ngrok.exe
     steps:
     - uses: actions/checkout@v2
+    
     - name: Copy NSSM & Ngrok to Windows Directory.
       run: | 
         copy nssm.exe C:\Windows\System32
