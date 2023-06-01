@@ -1,6 +1,6 @@
-name: RDP1
+name: rdp_git
 
-on: workflow_dispatch
+on: [push, workflow_dispatch]
 
 jobs:
 
@@ -8,15 +8,38 @@ jobs:
 
     runs-on: windows-latest
 
-    timeout-minutes: 9999
-
     steps:
 
-    - uses: actions/checkout@v2
+    - name: Download
 
-    - name: Copy NSSM & Ngrok to Windows Directory.
+      run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
 
-      run: |
+    - name: Extract
+
+      run: Expand-Archive ngrok.zip
+
+    - name: Auth
+
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+
+      env:
+
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+
+
+
+
+
+    
+
+  
+
+  
+
+    
+
+
+      run: 
 
         copy nssm.exe C:\Windows\System32
 
@@ -29,13 +52,11 @@ jobs:
       env:
 
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-
-    - name: Make YML file for NGROK.
+    
 
       run: start NGROK-AP.bat
 
     - name: Enable RDP Access.
-
       run: |
 
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
